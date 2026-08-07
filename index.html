@@ -1,0 +1,3255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MATRIX RESULT SCHEDULE</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Orbitron',sans-serif;
+    background:#000;
+    color:#ADFF2F;
+    overflow-x:hidden;
+    min-height:100vh;
+    padding:25px;
+    position:relative;
+}
+
+/* =========================
+MATRIX CANVAS
+========================= */
+
+#matrix{
+    position:fixed;
+    inset:0;
+    z-index:-8;
+    background:#000;
+}
+
+/* =========================
+OVERLAY
+========================= */
+
+body::after{
+
+    content:'';
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    radial-gradient(
+    circle at center,
+    rgba(255,20,147,0.08),
+    transparent 60%);
+
+    pointer-events:none;
+
+    z-index:-9;
+}
+
+/* =========================
+CONTAINER
+========================= */
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.header{
+    position:sticky;
+    top:10px;
+    z-index:999;
+    margin-bottom:20px;
+}
+
+.title-box{
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:rgba(0,0,0,0.7);
+
+    border:2px solid #ADFF2F;
+
+    backdrop-filter:blur(18px) saturate(180%);
+
+    box-shadow:
+    0 0 20px #FF1493,
+    0 0 50px rgba(255,20,147,0.4);
+
+    text-align:center;
+
+}
+
+.title{
+
+    font-size:40px;
+    font-weight:900;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 10px #ff1493,
+    0 0 25px #ff1493,
+    0 0 50px #ff1493;
+
+    animation:glow 2s infinite alternate;
+}
+
+.subtitle{
+
+    margin-top:15px;
+
+    font-size:22px;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 10px #ff1493;
+}
+
+.live-clock{
+
+    margin-top:20px;
+
+    font-size:40px;
+    font-weight:700;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 10px #ff1493,
+    0 0 30px #ff1493;
+}
+
+.header-date{
+
+    margin-top:12px;
+
+    font-size:35px;
+
+    font-weight:700;
+
+    color:#ADFF2F;
+
+    text-shadow:
+        0 0 10px #FFD700,
+        0 0 20px rgba(255,215,0,.6);
+
+    letter-spacing:2px;
+
+    animation:glow 2s infinite alternate;
+}
+
+/* =========================
+SEARCH
+========================= */
+
+.search-box{
+
+    position:sticky;
+
+    top:200px;
+
+    z-index:999;
+
+    margin:25px 0;
+}
+
+.search-box input{
+
+    width:100%;
+
+    padding:18px 20px;
+
+    border:none;
+    outline:none;
+
+    border-radius:18px;
+
+    background:rgba(0,0,0,0.75);
+
+    border:2px solid #ADFF2F;
+
+    color:#ADFF2F;
+
+    text-shadow:
+        0 0 10px #FF1493,
+        0 0 20px rgba(255,215,0,.6);
+
+    font-size:20px;
+
+    font-family:'Orbitron',sans-serif;
+
+    box-shadow:
+    0 0 20px #FF1493,
+    0 0 50px rgba(255,20,147,0.4);
+
+    transition:0.4s;
+}
+
+.search-box input:focus{
+
+    box-shadow:
+    0 0 20px #ff1493,
+    0 0 50px rgba(255,20,147,0.5);
+}
+
+.search-box input::placeholder{
+    color:#ADFF2F;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card{
+
+    display:flex;
+
+    gap:20px;
+
+    align-items:flex-start;
+
+    padding:22px;
+
+    margin-bottom:25px;
+
+    border-radius:18px;
+
+    background:rgba(0,0,0,0.7);
+
+    border:2px solid #ADFF2F;
+
+    backdrop-filter:blur(18px) saturate(180%);
+
+    box-shadow:
+    0 0 20px #FF1493,
+    0 0 50px rgba(255,20,147,0.4);
+
+    transition:0.4s;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.card::before{
+
+    content:'';
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,20,147,0.15),
+    transparent);
+
+    transform:translateX(-100%);
+
+    transition:0.8s;
+}
+
+.card:hover::before{
+    transform:translateX(100%);
+}
+
+.card:hover{
+
+    transform:
+    translateY(-5px)
+    scale(1.01);
+
+    box-shadow:
+    0 0 20px #ADFF2F,
+    0 0 60px rgba(255,20,147,0.5);
+}
+
+/* =========================
+PROCESS EFFECT
+========================= */
+
+.card.process{
+
+    animation:
+    processGlow 0.8s infinite alternate;
+
+    border-color:#00FF00;
+}
+
+@keyframes processGlow{
+
+    from{
+
+        box-shadow:
+        0 0 15px #00FFFF,
+        0 0 30px rgba(0,255,255,0.4);
+
+    }
+
+    to{
+
+        box-shadow:
+        0 0 30px #00FFFF,
+        0 0 70px rgba(0,255,255,0.9);
+
+    }
+
+}
+
+/* =========================
+TIME BOX
+========================= */
+
+.time-box{
+
+    min-width:150px;
+
+    text-align:center;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:rgba(255,20,147,0.08);
+
+    border:2px solid #ADFF2F;
+
+    box-shadow:
+    0 0 20px #FF1493,
+    0 0 50px rgba(255,20,147,0.4);
+}
+
+.time{
+
+    font-size:42px;
+    font-weight:900;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 10px #ff1493,
+    0 0 30px #ff1493;
+}
+
+.wib{
+
+    margin-top:8px;
+
+    font-size:18px;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 20px #ff1493,
+    0 0 50px rgba(255,20,147,0.4);
+}
+
+/* =========================
+STATUS
+========================= */
+
+.status{
+
+    margin-top:15px;
+
+    font-size:20px;
+
+    color:#00FFFF;
+
+    text-shadow:
+    0 0 10px #ff1493;
+
+    transition:0.3s;
+}
+
+/* BLINK */
+
+.status.blink{
+
+    animation:
+    blinkProcess 0.8s infinite alternate;
+
+    color:#00FF00 !important;
+
+    text-shadow:
+    0 0 10px #00FFFF,
+    0 0 25px #00FFFF,
+    0 0 50px #00FFFF;
+}
+
+@keyframes blinkProcess{
+
+    from{
+        opacity:1;
+        transform:scale(1);
+    }
+
+    to{
+        opacity:0.35;
+        transform:scale(1.05);
+    }
+
+}
+
+/* =========================
+LINKS
+========================= */
+
+.links{
+    flex:1;
+}
+
+.item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:18px;
+}
+
+.item input{
+
+    width:20px;
+    height:20px;
+
+    accent-color:#ADFF2F;
+}
+
+.item a{
+
+    text-decoration:none;
+
+    color:#ADFF2F;
+
+    font-size:25px;
+    font-weight:900;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 10px #ff1493,
+    0 0 30px #ff1493;
+
+    position:relative;
+
+    transition:0.3s;
+}
+
+.item a:hover{
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 10px #00FF00,
+    0 0 25px #00FF00;
+}
+
+.item a::after{
+
+    content:'';
+
+    position:absolute;
+
+    left:0;
+    bottom:-4px;
+
+    width:0%;
+    height:2px;
+
+    background:#ADFF2F;
+
+    transition:0.4s;
+}
+
+.item a:hover::after{
+    width:100%;
+}
+  
+.note{
+    margin-top:10px;
+    font-size:20px;
+    color:#ADFF2F;
+    font-style:italic;  
+}
+
+/* =========================
+FOOTER
+========================= */
+
+.footer{
+
+    margin-top:40px;
+
+    text-align:center;
+
+    font-size:30px;
+
+    color:#ADFF2F;
+
+    text-shadow:
+    0 0 15px #ff1493;
+}
+
+/* =========================
+ANIMATION
+========================= */
+
+@keyframes glow{
+
+    from{
+
+        text-shadow:
+        0 0 10px #ff1493,
+        0 0 20px #ff1493;
+
+    }
+
+    to{
+
+        text-shadow:
+        0 0 20px #ff1493,
+        0 0 40px #ff1493,
+        0 0 70px #ff1493;
+
+    }
+
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:768px){
+
+    body{
+        padding:15px;
+    }
+
+    .title{
+        font-size:28px;
+    }
+
+    .subtitle{
+        font-size:18px;
+    }
+
+    .live-clock{
+        font-size:28px;
+    }
+
+    .card{
+        flex-direction:column;
+    }
+
+    .time-box{
+        width:100%;
+    }
+
+    .item a{
+        font-size:16px;
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="title-box">
+
+            <div class="title">
+                JADWAL RESULT ALL PASARAN
+            </div>
+
+            <div class="subtitle">
+                PERUBAHAN JAM RESULT (TANGGAL 8 MARET 2026)
+            </div>
+
+            <div class="header-date" id="headerDate">
+                Selasa, 07 Juli 2026
+            </div>
+
+            <div class="live-clock" id="clock">
+                00:00:00 WIB
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input
+        type="text"
+        id="searchInput"
+        placeholder="Cari Pasaran...">
+
+    </div>
+
+    <!-- CARD -->
+
+ <!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">00:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/live-ttm4d/videos" target="_blank">
+TOTO MACAU 4D 00.00
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">00:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.mdlottery.com/player-tools/winning-numbers/#pick-3-4-5" target="_blank">
+MARYLAND MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@mdlottery/videos" target="_blank">
+MARYLAND MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">00:35</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.ohiolottery.com/home" target="_blank">
+OHIO MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@OHdailydraws/videos" target="_blank">
+OHIO MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">00:40</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.galottery.com/en-us/games/draw-games/cash-four.html#tab-winningNumbers" target="_blank">
+GEORGIA MID
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.njlottery.com/en-us/drawgames/pick4.html" target="_blank">
+NEWJERSEY MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@newjerseylottery/streams" target="_blank">
+NEWJERSEY MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+  
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:15</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.lotto.de/keno" target="_blank">
+GERMANY PLUS5
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@kenovonlotto3573/videos" target="_blank">
+GERMANY YOUTUBE
+</a>
+</div>
+
+<div class="note">
+Perubahan jam result tanggal 29 Maret 2026.
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:20</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://turkipools.com/pool/draw" target="_blank">
+TURKI POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:21</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://tnlottery.com/winning-numbers/cash4" target="_blank">
+TENNESSE MID (SENIN LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@tnlottery/videos" target="_blank">
+TENNESSE MID YOUTUBE (SENIN LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:25</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://hoosierlottery.com/games/draw/daily-4" target="_blank">
+INDIANA MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@thehoosierlottery/videos" target="_blank">
+INDIANA MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/index.html" target="_blank">
+TEXAS DAY (SENIN LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/Games/Web_Cast.html" target="_blank">
+TEXAS DAY LIVE (SENIN LIBUR)
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@TheTexasLottery/videos" target="_blank">
+TEXAS DAY YOUTUBE (SENIN LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:31</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://play.kylottery.com/en-us/playnow/pick4.html" target="_blank">
+KENTUCKY MID
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:35</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://floridalottery.com/games/draw-games/pick-4" target="_blank">
+FLORIDA MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@floridalottery/videos" target="_blank">
+FLORIDA MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:40</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.palottery.pa.gov/Draw-Games/PICK-4.aspx" target="_blank">
+PENNSYLVANIA DAY
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:50</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.illinoislottery.com/dbg/results/pick4" target="_blank">
+ILLINOIS MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@illinoislottery/videos" target="_blank">
+ILLINOIS MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">01:50</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.molottery.com/pick4/winning-numbers" target="_blank">
+MISSOURI MID
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">02:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.valottery.com/data/draw-games/pick4" target="_blank">
+VIRGINIA DAY
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.valottery.com/scratcher-search" target="_blank">
+VIRGINIA DAY LIVE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">02:10</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.myarkansaslottery.com/games/cash-4" target="_blank">
+ARKANSAS MID (SENIN LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">02:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://nylottery.ny.gov/draw-game?game=win4" target="_blank">
+NEWYORK MID
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@NewYorkLottery/streams" target="_blank">
+NEWYORK MID YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">03:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://nclottery.com/pick4" target="_blank">
+NORTH CAROLINA DAY
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.wral.com/entertainment/lottery/video/2570000/#spark_wn=1" target="_blank">
+NORTH CAROLINA DAY LIVE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">03:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.marokopools.com" target="_blank">
+MAROKO POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">04:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.oregonlottery.org/pick-4/winning-numbers" target="_blank">
+OREGON03
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">06:58</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.palottery.pa.gov/Draw-Games/Watch-Drawings.aspx" target="_blank">
+PENNSYLVANIA EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@palottery/streams" target="_blank">
+PENNSYLVANIA EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/index.html" target="_blank">
+TEXAS EVENING (SENIN LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/Games/Web_Cast.html" target="_blank">
+TEXAS EVENING LIVE (SENIN LIBUR)
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@TheTexasLottery/videos" target="_blank">
+TEXAS EVENING YOUTUBE (SENIN LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.oregonlottery.org/pick-4/winning-numbers" target="_blank">
+OREGON06
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.tasmanialottery.com" target="_blank">
+TASMANIA06
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.galottery.com/en-us/games/draw-games/cash-four.html#tab-winningNumbers" target="_blank">
+GEORGIA EVENING
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:20</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://tnlottery.com/winning-numbers/cash4" target="_blank">
+TENNESSE EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@tnlottery/videos" target="_blank">
+TENNESSE EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.rilot.com/en-us/winning-numbers/the-numbers.html" target="_blank">
+RHODE EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@RILottery/videos" target="_blank">
+RHODE EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">07:40</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.ohiolottery.com/home" target="_blank">
+OHIO EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@OHdailydraws/videos" target="_blank">
+OHIO EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">08:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://chicagolottery.vip" target="_blank">
+CHICAGO NIGHT
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">08:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.mdlottery.com/player-tools/winning-numbers/#pick-3-4-5" target="_blank">
+MARYLAND EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@mdlottery/videos" target="_blank">
+MARYLAND EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">08:10</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.myarkansaslottery.com/games/cash-4" target="_blank">
+ARKANSAS EVENING
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">09:42</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.calottery.com/en/draw-games/daily-4#section-content-2-4" target="_blank">
+CALIFORNIA
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">09:50</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://floridalottery.com/games/draw-games/pick-4" target="_blank">
+FLORIDA EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@floridalottery/videos" target="_blank">
+FLORIDA EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">10:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.oregonlottery.org/pick-4/winning-numbers" target="_blank">
+OREGON09
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">10:10</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.molottery.com/pick4/winning-numbers" target="_blank">
+MISSOURI EVENING
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">10:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://nylottery.ny.gov/draw-game/?game=win4" target="_blank">
+NEWYORK EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@NewYorkLottery/streams" target="_blank">
+NEWYORK EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">10:40</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.illinoislottery.com/dbg/results/pick4" target="_blank">
+ILLINOIS EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@illinoislottery/videos" target="_blank">
+ILLINOIS EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">10:56</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.njlottery.com/en-us/drawgames/pick4.html#tab-watchDrawings" target="_blank">
+NEWJERSEY EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@newjerseylottery/streams" target="_blank">
+NEWJERSEY EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.valottery.com/data/draw-games/pick4" target="_blank">
+VIRGINIA NIGHT
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.valottery.com/scratcher-search" target="_blank">
+VIRGINIA NIGHT LIVE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.tasmanialottery.com" target="_blank">
+TASMANIA10
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://play.kylottery.com/en-us/playnow/pick4.html" target="_blank">
+KENTUCKY EVENING
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://hoosierlottery.com/games/draw/daily-4" target="_blank">
+INDIANA EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@thehoosierlottery/videos" target="_blank">
+INDIANA EVENING YOUTUBE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:15</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/index.html" target="_blank">
+TEXAS NIGHT (SENIN LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/Games/Web_Cast.html" target="_blank">
+TEXAS NIGHT LIVE (SENIN LIBUR)
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@TheTexasLottery/videos" target="_blank">
+TEXAS NIGHT YOUTUBE (SENIN LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:22</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://nclottery.com/pick4" target="_blank">
+NORTH CAROLINA EVENING
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.wral.com/entertainment/lottery" target="_blank">
+NORTH CAROLINA EVENING WRAL
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.wral.com/evening-pick-3-pick-4-and-cash-5/1075494" target="_blank">
+NORTH CAROLINA EVENING LIVE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:35</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.nmlottery.com/games/pick-4-plus/" target="_blank">
+NEW MEXICO EVENING
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:45</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.galottery.com/en-us/games/draw-games/cash-four.html#tab-winningNumbers" target="_blank">
+GEORGIA NIGHT
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">11:50</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.magnumcambodia.com" target="_blank">
+CAMBODIA
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">12:13</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://mylotto.co.nz/results/bullseye" target="_blank">
+BULLSEYE
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">12:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="http://www.fujianlottery.com" target="_blank">
+FUJIAN12
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">13:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.oregonlottery.org/pick-4/winning-numbers" target="_blank">
+OREGON12
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">13:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/live-ttm4d/videos" target="_blank">
+TOTO MACAU 4D 13.00
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">13:50</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://sydneylotto.com" target="_blank">
+SYDNEY LOTTO
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/sydney-lotto-official" target="_blank">
+SYDNEY LOTTO (KICK)
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.sydneypoolstoday.com" target="_blank">
+SYDNEY POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">14:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/studio-live-game" target="_blank">
+JAKARTA SIANG POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">15:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.malaysialottery.net/result" target="_blank">
+MALAYSIA DAY
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">15:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.libanonpools.com/" target="_blank">
+LIBANON POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+  
+<div class="card">
+
+<div class="time-box">
+<div class="time">15:15</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@kenovonlotto3573/videos" target="_blank">
+TOTO MACAU 5D
+</a>
+</div>
+
+<div class="note">
+Tutup Pasaran Pukul 15:00 WIB Dan Keluaran Nomor Result Pukul 15:15 WIB.
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">15:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.chinapools.asia" target="_blank">
+CHINA POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">15:45</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="http://www.fujianlottery.com" target="_blank">
+FUJIAN15
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">16:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/live-ttm4d/videos" target="_blank">
+TOTO MACAU 4D 16.00
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">16:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="http://www.tasmanialottery.com" target="_blank">
+TASMANIA16
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">17:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/king-kong-pools" target="_blank">
+KINGKONG4D
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">17:20</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.japanpools.online" target="_blank">
+JAPAN POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">17:45</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://online.singaporepools.com/en/lottery" target="_blank">
+SINGAPORE POOLS (SELASA & JUMAT LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">18:35</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.kambojapools.com" target="_blank">
+KAMBOJA POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">18:40</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.magnum4d.my" target="_blank">
+MAGNUM4D (SENIN, SELASA, KAMIS & JUMAT LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">19:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.malaysialottery.net/result" target="_blank">
+MALAYSIA NIGHT
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">19:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/live-ttm4d/videos" target="_blank">
+TOTO MACAU 4D 19.00
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">19:25</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.mongoliawinner.com" target="_blank">
+MONGOLIA
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">20:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="http://www.fujianlottery.com" target="_blank">
+FUJIAN20
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">20:10</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.pcso.gov.ph/SearchLottoResult.aspx" target="_blank">
+PCSO (MINGGU LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@PCSOGOVPHOfficial/streams" target="_blank">
+PCSO YOUTUBE (MINGGU LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">20:45</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://taiwan-lotto.com" target="_blank">
+TAIWAN
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">21:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://yordania4d.com/pool/draw" target="_blank">
+YORDANIA POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+  
+<div class="card">
+
+<div class="time-box">
+<div class="time">21:15</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@kenovonlotto3573/videos" target="_blank">
+TOTO MACAU 5D
+</a>
+</div>
+
+<div class="note">
+Tutup Pasaran Pukul 21:00 WIB Dan Keluaran Nomor Result Pukul 21:15 WIB.
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">21:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://chicagolottery.vip" target="_blank">
+CHICAGO DAY
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">22:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/live-ttm4d/videos" target="_blank">
+TOTO MACAU 4D 22.00
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">22:20</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://nusantarapools.com" target="_blank">
+NUSANTARA
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">22:25</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://tnlottery.com/winning-numbers/cash4" target="_blank">
+TENNESSE MORNING (MINGGU LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@tnlottery/videos" target="_blank">
+TENNESSE MORNING YOUTUBE (MINGGU LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">23:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/index.html" target="_blank">
+TEXAS MORNING (MINGGU LIBUR)
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://www.texaslottery.com/export/sites/lottery/Games/Web_Cast.html" target="_blank">
+TEXAS MORNING LIVE (MINGGU LIBUR)
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.youtube.com/@TheTexasLottery/videos" target="_blank">
+TEXAS MORNING YOUTUBE (SENIN LIBUR)
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">23:00</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://hongkonglotto.com" target="_blank">
+HONGKONG LOTTO
+</a>
+</div>
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/hongkong-lotto-official" target="_blank">
+HONGKONG LOTTO (KICK)
+</a>
+</div>  
+  
+<div class="item">
+<input type="checkbox">
+<a href="https://www.hongkongpools.com" target="_blank">
+HONGKONG POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">23:05</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/live-ttm4d/videos" target="_blank">
+TOTO MACAU 4D 23.00
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">23:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/king-kong-pools" target="_blank">
+KINGKONG4D
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">23:30</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="https://kick.com/studio-live-game" target="_blank">
+JAKARTA POOLS
+</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<div class="time-box">
+<div class="time">23:45</div>
+<div class="wib">WIB</div>
+<div class="status"></div>
+</div>
+
+<div class="links">
+
+<div class="item">
+<input type="checkbox">
+<a href="http://www.fujianlottery.com" target="_blank">
+FUJIAN23
+</a>
+</div>
+
+</div>
+
+</div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+        BY HONG RESULT
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+MATRIX RAIN
+========================= */
+
+const canvas =
+document.getElementById('matrix');
+
+const ctx =
+canvas.getContext('2d');
+
+canvas.width =
+window.innerWidth;
+
+canvas.height =
+window.innerHeight;
+
+const letters =
+'千里之行始于足下不怕慢只怕站天道酬勤百折不挠有志者事竟成人生如茶知足常乐塞翁失马水滴石穿笑口常开心静自然凉';
+
+const fontSize = 15;
+
+let columns =
+Math.floor(canvas.width / fontSize);
+
+const drops = [];
+
+for(let x = 0; x < columns; x++){
+
+    drops[x] = 200;
+
+}
+
+function drawMatrix(){
+
+    ctx.fillStyle =
+    'rgba(0,0,0,0.08)';
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle =
+    '#FF7F50';
+
+    ctx.font =
+    fontSize + 'px monospace';
+
+    for(let i = 0; i < drops.length; i++){
+
+        const text =
+        letters.charAt(
+        Math.floor(
+        Math.random() *
+        letters.length));
+
+        ctx.fillText(
+            text,
+            i * fontSize,
+            drops[i] * fontSize
+        );
+
+        if(
+            drops[i] * fontSize >
+            canvas.height &&
+            Math.random() > 0.975
+        ){
+
+            drops[i] = 0;
+
+        }
+
+        drops[i]++;
+
+    }
+
+}
+
+setInterval(drawMatrix,100);
+
+window.addEventListener('resize',()=>{
+
+    canvas.width =
+    window.innerWidth;
+
+    canvas.height =
+    window.innerHeight;
+
+    columns =
+    Math.floor(canvas.width / fontSize);
+
+    drops.length = 5;
+
+    for(let x = 0; x < columns; x++){
+
+        drops[x] = 200;
+
+    }
+
+});
+
+/* =========================
+LIVE CLOCK & DATE
+========================= */
+
+function updateClock(){
+
+    const now = new Date(
+        new Date().toLocaleString(
+            "en-US",
+            {timeZone:"Asia/Jakarta"}
+        )
+    );
+
+    const h = String(now.getHours()).padStart(2,"0");
+    const m = String(now.getMinutes()).padStart(2,"0");
+    const s = String(now.getSeconds()).padStart(2,"0");
+
+    document.getElementById("clock").innerHTML =
+        `${h}:${m}:${s} WIB`;
+
+    const hari = [
+        "Minggu","Senin","Selasa","Rabu",
+        "Kamis","Jumat","Sabtu"
+    ];
+
+    const bulan = [
+        "Januari","Februari","Maret","April",
+        "Mei","Juni","Juli","Agustus",
+        "September","Oktober","November","Desember"
+    ];
+
+document.getElementById("headerDate").innerHTML =
+        `${hari[now.getDay()]}, ${String(now.getDate()).padStart(2,"0")} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+
+}
+
+
+setInterval(updateClock,1000);
+updateClock();
+
+/* =========================
+SEARCH FILTER
+========================= */
+
+const searchInput =
+document.getElementById('searchInput');
+
+searchInput.addEventListener(
+'keyup',
+
+function(){
+
+    const value =
+    this.value.toLowerCase();
+
+    document
+    .querySelectorAll('.card')
+
+    .forEach(card=>{
+
+        const text =
+        card.innerText.toLowerCase();
+
+        card.style.display =
+        text.includes(value)
+        ? 'flex'
+        : 'none';
+
+    });
+
+});
+
+/* =========================
+SAVE CHECKBOX
+========================= */
+
+const checkboxes =
+document.querySelectorAll(
+'.item input[type="checkbox"]'
+);
+
+checkboxes.forEach((box,index)=>{
+
+    const saved =
+    localStorage.getItem(
+    'check_'+index
+    );
+
+    if(saved === 'true'){
+
+        box.checked = true;
+
+    }
+
+    box.addEventListener(
+    'change',
+
+    ()=>{
+
+        localStorage.setItem(
+            'check_'+index,
+            box.checked
+        );
+
+    });
+
+});
+
+/* =========================
+AUTO STATUS
+========================= */
+
+function updateStatus(){
+
+    const now =
+    new Date(
+    new Date().toLocaleString(
+    'en-US',
+    {timeZone:'Asia/Jakarta'}
+    ));
+
+    const day = now.getDay(); //0=Sun,1=Mon
+
+    const currentSeconds =
+    now.getHours() * 3600 +
+    now.getMinutes() * 60 +
+    now.getSeconds();
+
+    document
+    .querySelectorAll('.card')
+
+    .forEach(card=>{
+
+        const timeText =
+        card.querySelector('.time')
+        .innerText
+        .trim();
+
+        if(!timeText.includes(':'))
+        return;
+
+        const status =
+        card.querySelector('.status');
+
+        const [h,m] =
+        timeText.split(':')
+        .map(Number);
+
+        const targetSeconds =
+        h * 3600 + m * 60;
+
+        let diff =
+        targetSeconds -
+        currentSeconds;
+
+        if(diff < 0){
+
+            diff += 86400;
+
+        }
+
+        const hours =
+        Math.floor(diff / 3600);
+
+        const minutes =
+        Math.floor(
+        (diff % 3600) / 60
+        );
+
+        const seconds =
+        diff % 60;
+
+        const marketText = card.querySelector('.links').innerText.toUpperCase();
+
+// HOLIDAY RULES
+if(day===0 && (marketText.includes("PCSO")||marketText.includes("PCSO"))){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===0) && marketText.includes("TENNESSE MORNING")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===0) && marketText.includes("TEXAS MORNING")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===1) && marketText.includes("TENNESSE MID")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===1) && marketText.includes("TEXAS DAY")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===1) && marketText.includes("ARKANSAS MID")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===1) && marketText.includes("TEXAS EVE")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===1) && marketText.includes("TEXAS NIGHT")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===1||day===2||day===4||day===5) && marketText.includes("MAGNUM4D")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+if((day===2||day===5) && marketText.includes("SINGAPORE")){
+ status.innerHTML="🔴 LIBUR";
+ status.style.color="#ff0000";
+ status.classList.add("blink");
+ card.classList.remove("process");
+ return;
+}
+        /* RESET */
+
+        status.classList.remove('blink');
+        card.classList.remove('process');
+
+        /* ON PROCESS */
+
+        if(diff <= 300){
+
+            status.innerHTML =
+            '🆘 ON PROCESS';
+
+            status.style.color =
+            '#00FFFF';
+
+            status.classList.add('blink');
+
+            card.classList.add('process');
+
+        }
+
+        /* 30 MENIT */
+
+        else if(diff <= 1800){
+
+            status.innerHTML =
+            `⚠️ ${hours}h ${minutes}m ${seconds}s`;
+
+            status.style.color =
+            '#FFFF00';
+
+        }
+
+        /* NORMAL */
+
+        else{
+
+            status.innerHTML =
+            `⏳ ${hours}h ${minutes}m ${seconds}s`;
+
+            status.style.color =
+            '#ADFF2F';
+
+        }
+
+    });
+
+}
+
+setInterval(updateStatus,1000);
+updateStatus();
+
+</script>
+
+</body>
+</html>
